@@ -1,0 +1,17 @@
+# /etc/netplan/ on GLPI01 (Ubuntu Server 24.04)
+# ens33 = NAT (internet + default route, DHCP)
+# ens34 = host-only lab network (static, no gateway), DNS -> DC01
+network:
+  version: 2
+  ethernets:
+    ens33:
+      dhcp4: true
+      dhcp4-overrides:
+        use-dns: false      # ignore VMware NAT DNS so corp.local always resolves via DC01
+        use-domains: false
+    ens34:
+      dhcp4: false
+      addresses: [192.168.202.20/24]
+      nameservers:
+        addresses: [192.168.202.10]
+        search: [corp.local]
