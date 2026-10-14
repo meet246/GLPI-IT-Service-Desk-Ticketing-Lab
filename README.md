@@ -119,7 +119,7 @@ Each VM has a second NIC on VMware NAT for internet access (updates, downloads).
 | | |
 |---|---|
 | ![rules](screenshots/phase3-service-desk/02-sla-business-rules.png) | ![sla dates](screenshots/phase3-service-desk/03-ticket-sla-due-dates.png) |
-| Routing rule + one SLA rule per priority | **Done when:** a new ticket gets the tech group and both SLA due dates automatically |
+| Routing rule + one SLA rule per priority | A new ticket gets the tech group and both SLA due dates automatically |
 
 ---
 
