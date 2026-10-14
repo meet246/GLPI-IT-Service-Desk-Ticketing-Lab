@@ -85,7 +85,7 @@ Each VM has a second NIC on VMware NAT for internet access (updates, downloads).
 | ![FHS ownership](screenshots/phase1-server/15-fhs-layout-ownership.png) | ![DB grants](screenshots/phase1-server/14-glpi-db-grants.png) |
 | Code owned by root, writable dirs owned by `www-data` | GLPI DB user limited to the `glpi` database |
 | ![vhost](screenshots/phase1-server/16-apache-glpi-vhost.png) | ![From CLIENT01](screenshots/phase1-server/21-dashboard-from-client01.png) |
-| Apache vhost serving only `public/` | **Done when:** CLIENT01 reaches `http://glpi.corp.local` by name and logs in as the new admin |
+| Apache vhost serving only `public/` | CLIENT01 reaches `http://glpi.corp.local` by name and logs in as the new admin |
 
 ---
 
