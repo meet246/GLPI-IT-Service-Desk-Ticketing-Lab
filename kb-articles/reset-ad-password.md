@@ -3,7 +3,7 @@
 **Category:** Account & Access
 **Audience:** IT Service Desk technicians (not visible to Self-Service users, not in the FAQ)
 **Applies to:** standard domain user accounts in `corp.local`. **Not** for admin, service, or executive accounts (see Escalation).
-**Written from:** ticket #11 (Scenario 1)
+**Written from:** ticket #11 (Ticket Scenario 1)
 
 ## Symptoms
 - User calls saying they forgot their password, their password expired, or they're locked out of their PC.

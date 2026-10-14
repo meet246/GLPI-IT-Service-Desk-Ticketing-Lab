@@ -11,12 +11,12 @@ A working IT service desk built on top of an existing Active Directory lab. GLPI
 - [What I Built](#what-i-built)
 - [Lab Architecture](#lab-architecture)
 - [Environment](#environment)
-- [Phase 1: GLPI Server](#phase-1-glpi-server)
-- [Phase 2: AD Integration over LDAPS](#phase-2-ad-integration-over-ldaps)
-- [Phase 3: Service Desk Structure](#phase-3-service-desk-structure)
-- [Phase 4: Asset Inventory](#phase-4-asset-inventory)
-- [Scenario 1: Password Reset](#scenario-1-password-reset)
-- [Scenario 2: New User Onboarding](#scenario-2-new-user-onboarding)
+- [GLPI Server Setup](#glpi-server-setup)
+- [AD Integration over LDAPS](#ad-integration-over-ldaps)
+- [IT Service Desk Structure](#it-service-desk-structure)
+- [Asset Inventory](#asset-inventory)
+- [Ticket Scenario 1: Password Reset](#ticket-scenario-1-password-reset)
+- [Ticket Scenario 2: New User Onboarding](#ticket-scenario-2-new-user-onboarding)
 - [Challenges & Troubleshooting](#challenges--troubleshooting)
 - [Skills Demonstrated](#skills-demonstrated)
 - [Repo Contents](#repo-contents)
@@ -72,7 +72,7 @@ Each VM has a second NIC on VMware NAT for internet access (updates, downloads).
 
 ---
 
-## Phase 1: GLPI Server
+## GLPI Server Setup
 
 - Built an Ubuntu Server VM with two NICs: NAT via DHCP for internet, and a static `192.168.202.20` on the lab network with DNS pointed at DC01 ([netplan config](configs/netplan-glpi01.yaml)).
 - Added a `glpi.corp.local` A record on DC01.
@@ -82,14 +82,14 @@ Each VM has a second NIC on VMware NAT for internet access (updates, downloads).
 
 | | |
 |---|---|
-| ![FHS ownership](screenshots/phase1-server/15-fhs-layout-ownership.png) | ![DB grants](screenshots/phase1-server/14-glpi-db-grants.png) |
+| ![FHS ownership](screenshots/glpi-server-setup/15-fhs-layout-ownership.png) | ![DB grants](screenshots/glpi-server-setup/14-glpi-db-grants.png) |
 | Code owned by root, writable dirs owned by `www-data` | GLPI DB user limited to the `glpi` database |
-| ![vhost](screenshots/phase1-server/16-apache-glpi-vhost.png) | ![From CLIENT01](screenshots/phase1-server/21-dashboard-from-client01.png) |
+| ![vhost](screenshots/glpi-server-setup/16-apache-glpi-vhost.png) | ![From CLIENT01](screenshots/glpi-server-setup/21-dashboard-from-client01.png) |
 | Apache vhost serving only `public/` | CLIENT01 reaches `http://glpi.corp.local` by name and logs in as the new admin |
 
 ---
 
-## Phase 2: AD Integration over LDAPS
+## AD Integration over LDAPS
 
 - Created a `svc-glpi-ldap` bind account (Domain Users only) in a `Service Accounts` OU, a `GLPI-Techs` security group, and test users.
 - DC01 rejected simple binds on port 389 (LDAP signing is enforced on Server 2025), so I installed **AD CS** as an Enterprise Root CA, let DC01 enroll a Domain Controller certificate, trusted the root CA on GLPI01, and pointed GLPI at `ldaps://dc01.corp.local:636`.
@@ -98,16 +98,16 @@ Each VM has a second NIC on VMware NAT for internet access (updates, downloads).
 
 | | |
 |---|---|
-| ![openssl before](screenshots/phase2-ad-ldaps/04-openssl-verify-code-21.png) | ![openssl after](screenshots/phase2-ad-ldaps/06-openssl-verify-ok.png) |
+| ![openssl before](screenshots/ad-integration-ldaps/04-openssl-verify-code-21.png) | ![openssl after](screenshots/ad-integration-ldaps/06-openssl-verify-ok.png) |
 | Before: GLPI01 doesn't trust DC01's certificate (code 21) | After trusting `corp-ROOT-CA`: `Verify return code: 0 (ok)` |
-| ![normal user](screenshots/phase2-ad-ldaps/08-normal-user-self-service.png) | ![tech user](screenshots/phase2-ad-ldaps/09-tech-user-technician-profile.png) |
+| ![normal user](screenshots/ad-integration-ldaps/08-normal-user-self-service.png) | ![tech user](screenshots/ad-integration-ldaps/09-tech-user-technician-profile.png) |
 | Normal AD user → Self-Service | `GLPI-Techs` member → Technician (+ Self-Service) |
 
-*(Phase 2 screenshots show "Root Entity". Users were moved to the IT Service Desk entity in Phase 3.)*
+*(These screenshots show "Root Entity". Users were moved to the IT Service Desk entity in the next section.)*
 
 ---
 
-## Phase 3: Service Desk Structure
+## IT Service Desk Structure
 
 - **Entity:** `IT Service Desk` under root, so a future Security Operations entity can sit beside it without either team seeing the other's tickets. Authorization rules place users into this entity.
 - **Tech group:** `IT Service Technicians`, assignable, in IT Service Desk.
@@ -118,12 +118,12 @@ Each VM has a second NIC on VMware NAT for internet access (updates, downloads).
 
 | | |
 |---|---|
-| ![rules](screenshots/phase3-service-desk/02-sla-business-rules.png) | ![sla dates](screenshots/phase3-service-desk/03-ticket-sla-due-dates.png) |
+| ![rules](screenshots/it-service-desk-structure/02-sla-business-rules.png) | ![sla dates](screenshots/it-service-desk-structure/03-ticket-sla-due-dates.png) |
 | Routing rule + one SLA rule per priority | A new ticket gets the tech group and both SLA due dates automatically |
 
 ---
 
-## Phase 4: Asset Inventory
+## Asset Inventory
 
 - Enabled GLPI's native inventory and installed the **GLPI Agent** on CLIENT01, reporting to `http://glpi.corp.local`.
 - Added an entity rule: computers whose domain is `corp.local` go to IT Service Desk. Non-domain machines stay in root, which works as an "unmanaged device" signal.
@@ -131,12 +131,12 @@ Each VM has a second NIC on VMware NAT for internet access (updates, downloads).
 
 | | |
 |---|---|
-| ![inventory](screenshots/phase4-inventory/01-client01-software-inventory.png) | ![linked](screenshots/phase4-inventory/02-computer-linked-to-ticket.png) |
+| ![inventory](screenshots/asset-inventory/01-client01-software-inventory.png) | ![linked](screenshots/asset-inventory/02-computer-linked-to-ticket.png) |
 | CLIENT01 in IT Service Desk with automatic software inventory | Technician links CLIENT01 to a ticket |
 
 ---
 
-## Scenario 1: Password Reset
+## Ticket Scenario 1: Password Reset
 
 A user calls the help desk because they forgot their password.
 
@@ -157,14 +157,14 @@ A user calls the help desk because they forgot their password.
 
 ---
 
-## Scenario 2: New User Onboarding
+## Ticket Scenario 2: New User Onboarding
 
 A hiring manager requests an account for a new HR employee starting the next day.
 
 1. Onboarding request logged in *Onboarding & Offboarding*, auto-assigned with SLA due dates (High priority).
 2. A ticket **task** breaks the work into steps: create AD account, add to groups, assign workstation, verify first login.
 3. New user created in the HR OU with a temporary password and "must change at next logon".
-4. First sign-in on CLIENT01 forces the password change. The new user then logs in to GLPI and is **provisioned automatically** with the Self-Service profile in IT Service Desk, with no manual GLPI setup. This shows the Phase 2 rules working end-to-end.
+4. First sign-in on CLIENT01 forces the password change. The new user then logs in to GLPI and is **provisioned automatically** with the Self-Service profile in IT Service Desk, with no manual GLPI setup. This shows the AD integration rules working end-to-end.
 5. The solution was saved straight to the knowledge base with GLPI's "Save & add to the knowledge base" option, then expanded into a full [onboarding checklist](kb-articles/new-user-onboarding.md).
 
 | | |
@@ -289,10 +289,10 @@ Real problems hit during the build, written up as symptom → cause → fix → 
 │   ├── reset-ad-password.md
 │   └── new-user-onboarding.md
 └── screenshots/
-    ├── phase1-server/
-    ├── phase2-ad-ldaps/
-    ├── phase3-service-desk/
-    ├── phase4-inventory/
+    ├── glpi-server-setup/
+    ├── ad-integration-ldaps/
+    ├── it-service-desk-structure/
+    ├── asset-inventory/
     ├── scenario1-password-reset/
     └── scenario2-onboarding/
 ```

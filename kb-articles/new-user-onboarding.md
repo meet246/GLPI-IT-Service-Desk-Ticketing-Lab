@@ -3,7 +3,7 @@
 **Category:** Onboarding & Offboarding
 **Audience:** IT Service Desk technicians (target: IT Service Technicians group, not in the FAQ)
 **Applies to:** new standard employees in `corp.local`. Contractors and admin accounts follow a separate approval process (see Escalation).
-**Written from:** ticket #12 (Scenario 2), created with GLPI's "Save & add to the knowledge base" option on the solution
+**Written from:** ticket #12 (Ticket Scenario 2), created with GLPI's "Save & add to the knowledge base" option on the solution
 
 ## Trigger
 - A hiring manager submits an onboarding request with the new hire's name, title, department, start date, and the access they need.
