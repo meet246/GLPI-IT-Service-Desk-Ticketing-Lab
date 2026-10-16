@@ -25,9 +25,9 @@ A working IT service desk built on top of an existing Active Directory lab. GLPI
 
 ## What I Built
 
-<!-- TODO (Jack): rewrite this section in your own words. -->
 
-I wanted hands-on help desk experience with a real ticketing system, not just a line on a resume. So I added a GLPI service desk to my Active Directory lab and ran it like a small company's IT desk: AD users log in with their domain accounts, tickets are routed to a tech group automatically with SLA due dates, the tech fixes the actual problem in AD or on the endpoint, documents the fix as a knowledge base article, and closes the ticket.
+
+I wanted hands-on help desk experience with a real ticketing system. So I connected GLPI service desk to my Active Directory lab and ran it like a small company's IT desk: AD users log in with their domain accounts, tickets are routed to a tech group automatically with SLA due dates, the tech fixes the actual problem in AD or on the endpoint, documents the fix as a knowledge base article, and closes the ticket.
 
 Along the way I hit (and documented) ten real problems, from a multi-homed domain controller registering two IPs in DNS to Windows Server 2025 refusing cleartext LDAP binds, which I solved by standing up an enterprise CA and moving GLPI to LDAPS instead of weakening the DC.
 
